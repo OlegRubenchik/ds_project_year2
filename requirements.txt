@@ -1,0 +1,2 @@
+# Python dependencies
+# Add specific package requirements here as needed 
