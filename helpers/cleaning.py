@@ -6,8 +6,11 @@ from typing import Union
 # ALL PATHS
 ROOT = Path(__file__).parent.parent
 CLEAN_DATASET = ROOT / 'data' / 'processed' / 'clean_dataset.parquet'
+RAW_DATASET = ROOT / 'data' / 'raw' / 'ads_dataset_13k.xlsx'
 
-def clean(dataset: Union[Path,str,pd.DataFrame], force: bool = False) -> pd.DataFrame:
+def clean(dataset: Union[Path,str,pd.DataFrame] = RAW_DATASET, force: bool = False) -> pd.DataFrame:
+
+    
     
     if CLEAN_DATASET.exists() and not force:
         print(f"Using existing cleaned dataset from: {CLEAN_DATASET}")
@@ -22,6 +25,8 @@ def clean(dataset: Union[Path,str,pd.DataFrame], force: bool = False) -> pd.Data
     # Cleaning logic
     df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_').str.replace('-', '_')
 
+
+
     df.index.name = 'n_sample'
     df.columns.name = 'feature_label'
     #TODO
@@ -33,7 +38,5 @@ def clean(dataset: Union[Path,str,pd.DataFrame], force: bool = False) -> pd.Data
     return df
 
 if __name__ == "__main__":
-    print("Enter the path to a dataset you want to use (should be .xlsx): ")
-    input_file = Path(input())
-    clean(input_file,force=True)
+    clean(force=True)
 

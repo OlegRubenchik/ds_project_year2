@@ -26,6 +26,10 @@ env/
 ENV/
 .env
 
+
+*.csv
+*.xlsx
+
 # Jupyter Notebook
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
