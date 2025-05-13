@@ -14,5 +14,3 @@ def load_data(file_path: Path = CLEAN_DATASET) -> pd.DataFrame:
     print('Loaded the dataset!')
     return df
 
-df = load_data()
-

@@ -41,6 +41,25 @@ add_to_path()
 
 from helpers.data_manip import load_data
 
+from sklearn.base import BaseEstimator, RegressorMixin
+
+class LogTransformedRegressor(BaseEstimator, RegressorMixin):
+    """Wrapper that handles log transformation internally"""
+    def __init__(self, regressor):
+        self.regressor = regressor
+    
+    def fit(self, X, y):
+        # Transform y to log scale for training
+        self.y_min_ = y.min()
+        log_y = np.log(y)
+        self.regressor.fit(X, log_y)
+        return self
+    
+    def predict(self, X):
+        # Get predictions and convert back to normal scale
+        log_pred = self.regressor.predict(X)
+        return np.exp(log_pred)
+
 def parse_args():
     p = argparse.ArgumentParser(description="Batch‑predict property prices.")
     p.add_argument("--model", required=True, help="Path to price_model.joblib")
@@ -55,37 +74,49 @@ def parse_args():
     return p.parse_args()
 
 
-def load_features(df: pd.DataFrame):
-    """Return numeric feature frame, dropping target columns."""
-    numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
-    feature_cols = [c for c in numeric_cols if c not in ["price", "price_per_sqm"]]
-    return df[feature_cols]
+def load_features(df: pd.DataFrame, feature_list=None):
+    """Return feature frame with specified features or all numeric features if not specified."""
+    if feature_list is not None:
+        # Use the provided feature list
+        return df[feature_list].copy()
+    else:
+        # Fallback to original behavior
+        numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
+        feature_cols = [c for c in numeric_cols if c not in ["price", "price_per_sqm"]]
+        return df[feature_cols]
 
 
 def main():
     args = parse_args()
 
     print("Loading model …")
-    model = joblib.load(args.model)
+    model_info = joblib.load(args.model)
+    # Extract the actual model from the saved dictionary
+    model = model_info['model']
+    features = model_info['features']
+    # Turn off verbose output for prediction
+    model.regressor.set_params(verbose=0)
+    print(f"Model loaded (trained on {model_info['timestamp']})")
+    print(f"Using features: {', '.join(features)}")
 
     print("Loading data …")
     data_path = Path(args.data)
     df = pd.read_parquet(data_path)
     df = df[df['price'] >= 20000]
 
-    X = load_features(df)
+    X = load_features(df, features)
 
     print("Predicting …")
     preds = model.predict(X)
-    df["Predicted Price"] = preds
+    df["predicted_price"] = preds
 
     # --------------------------------------------------
     # Quick metrics on rows that have ground truth Price
     # --------------------------------------------------
-    if "Price" in df.columns:
-        mask = df["Price"].notna()
+    if "price" in df.columns:
+        mask = df["price"].notna()
         if mask.any():
-            y_true = df.loc[mask, "Price"].values
+            y_true = df.loc[mask, "price"].values
             y_pred = preds[mask]
             mae = mean_absolute_error(y_true, y_pred)
             rmse = math.sqrt(mean_squared_error(y_true, y_pred))

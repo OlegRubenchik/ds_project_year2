@@ -5,6 +5,8 @@ PRICE_REG_CONFIG = [
     'floor_number',
     'latitude',
     'longitude',
+    'loccell',
+    
 
 
 
