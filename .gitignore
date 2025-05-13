@@ -27,7 +27,7 @@ ENV/
 .env
 
 data/
-
+*.joblib
 *.csv
 *.xlsx
 
