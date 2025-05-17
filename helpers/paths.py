@@ -22,6 +22,8 @@ class Files:
     LOC_GRID_MAP = Dirs.DATA_MAPS_DIR / 'location_grid_map.html'
 
     # Statistics
+    PRICE_HISTOGRAM = Dirs.DATA_STAT_DIR / 'price_histogram.png'
+    LOG_PRICE_HISTOGRAM = Dirs.DATA_STAT_DIR / 'log_price_histogram.png'
     PRICE_DISTR_TABLE = Dirs.DATA_STAT_DIR / 'price_distribution.png'
     PRICE_CORR_HEATMAP = Dirs.DATA_STAT_DIR / 'price_feature_correlation_heatmap.png'
     PRICE_SCATTER_PLOTS = Dirs.DATA_STAT_DIR / 'price_feature_correlations_scatter.png'

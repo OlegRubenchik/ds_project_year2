@@ -123,7 +123,7 @@ if __name__ == "__main__":
         example_features = {
             'build_area': 94,
             'construction_year': 1970,
-            'number_of_bedrooms': 1,
+            'number_of_bedrooms': 2,
             'floor_number': 0,
             'latitude': 38.020516,
             'longitude': 23.728080
