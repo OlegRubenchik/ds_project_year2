@@ -15,7 +15,7 @@ from insights.location_grid import create_grid_and_map
 ROOT = Path(__file__).parent.parent
 PROCESSED_DIR = ROOT / 'data' / 'processed'
 CLEAN_DATASET = PROCESSED_DIR / 'clean_dataset.parquet'
-RAW_DATASET = ROOT / 'data' / 'raw' / 'ads_dataset_20k.xlsx'
+RAW_DATASET = ROOT / 'data' / 'raw' / 'ads_dataset_13k.xlsx'
 
 def clean(dataset: Union[Path,str,pd.DataFrame] = RAW_DATASET, force: bool = False) -> pd.DataFrame:
     # Ensure output directory exists
