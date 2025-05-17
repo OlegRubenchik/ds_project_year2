@@ -9,9 +9,10 @@ import sys
 
 PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
+from helpers.paths import Dirs, Files
 
 # Create output directory for the map
-OUTDIR = Path(__file__).parent.parent / 'data' / 'insights'
+OUTDIR = Dirs.DATA_MAPS_DIR
 OUTDIR.mkdir(parents=True, exist_ok=True)
 
 def create_grid_and_map(df: pd.DataFrame) -> pd.DataFrame:
@@ -147,14 +148,15 @@ def create_grid_and_map(df: pd.DataFrame) -> pd.DataFrame:
     colormap.caption = 'Average Price in Grid Cell'
 
     # Save the map
-    output_path = OUTDIR / f'location_grid_map_{timestamp}.html'
+    output_path = Files.LOC_GRID_MAP
     m.save(str(output_path))
     print(f"\nMap saved to: {output_path}")
 
     # Save grid information for future use
     grid_info = valid_coords[['latitude', 'longitude', 'price', 'loccell']]
-    grid_info.to_parquet(OUTDIR / 'location_grid.parquet')
-    print("\nGrid information saved to:", OUTDIR / 'location_grid.parquet')
+    parquet_out = Files.LOC_GRID_PARQUET
+    grid_info.to_parquet(parquet_out)
+    print("\nGrid information saved to:", parquet_out)
 
     # Print insights about grid cells
     valid_stats = grid_stats[grid_stats[('price', 'count')] >= min_properties]

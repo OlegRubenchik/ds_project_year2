@@ -1,3 +1,17 @@
+# Ignore all data files by default
+data/*
+
+# Keep raw data
+!data/raw/
+data/raw/*
+!data/raw/ads_dataset_13k.xlsx
+!data/raw/ads_dataset_20k.xlsx
+!data/raw/athens_metro_coordinates.csv
+
+# Ignore processed and insights
+data/processed/
+data/insights/
+
 # Python
 __pycache__/
 *.py[cod]
@@ -28,8 +42,9 @@ ENV/
 
 data/
 *.joblib
-*.csv
 *.xlsx
+*.html
+*.parquet
 
 # Jupyter Notebook
 .ipynb_checkpoints

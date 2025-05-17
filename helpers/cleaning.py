@@ -2,12 +2,13 @@ import pandas as pd
 import os
 import numpy as np
 from pathlib import Path
-from typing import Union
-
+from typing import Literal
+from rich import print
 
 import sys
-PROJECT_ROOT = Path(__file__).parent.parent
-sys.path.insert(0, str(PROJECT_ROOT))
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 from insights.location_grid import create_grid_and_map
 
@@ -15,20 +16,23 @@ from insights.location_grid import create_grid_and_map
 ROOT = Path(__file__).parent.parent
 PROCESSED_DIR = ROOT / 'data' / 'processed'
 CLEAN_DATASET = PROCESSED_DIR / 'clean_dataset.parquet'
-RAW_DATASET = ROOT / 'data' / 'raw' / 'ads_dataset_13k.xlsx'
+RAW_DATASET_13k = ROOT / 'data' / 'raw' / 'ads_dataset_13k.xlsx'
+RAW_DATASET_20k = ROOT / 'data' / 'raw' / 'ads_dataset_20k.xlsx'
+DATASETS = {
+    '13k': RAW_DATASET_13k,
+    '20k': RAW_DATASET_20k
+}
 
-def clean(dataset: Union[Path,str,pd.DataFrame] = RAW_DATASET, force: bool = False) -> pd.DataFrame:
+def clean_and_save(dataset: Literal['20k', '13k'], force: bool = False) -> pd.DataFrame:
     # Ensure output directory exists
     PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
     
     if CLEAN_DATASET.exists() and not force:
         print(f"Using existing cleaned dataset from: {CLEAN_DATASET}")
         return None
-    
-    if isinstance(dataset, (Path, str)):
-        df = pd.read_excel(dataset)
-    else:
-        df = dataset
+    print(f'[green]Using {dataset} dataset[/green]')
+    df = pd.read_excel(DATASETS[dataset])
+
     
     # Cleaning logic
     df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_').str.replace('-', '_')
@@ -63,8 +67,6 @@ def clean(dataset: Union[Path,str,pd.DataFrame] = RAW_DATASET, force: bool = Fal
 
     df.index.name = 'n_sample'
     df.columns.name = 'feature_label'
-    #TODO
-    #Implement cleaning
 
     # Save as parquet
     print(f"\nSaving cleaned dataset to: {CLEAN_DATASET}")
@@ -74,5 +76,5 @@ def clean(dataset: Union[Path,str,pd.DataFrame] = RAW_DATASET, force: bool = Fal
     return df
 
 if __name__ == "__main__":
-    clean(force=True)
+    clean_and_save('13k',force=True)
 
