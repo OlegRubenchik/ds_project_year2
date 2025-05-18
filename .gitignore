@@ -12,6 +12,8 @@ data/raw/*
 data/processed/
 data/insights/
 
+!price_model.joblib
+
 # Python
 __pycache__/
 *.py[cod]

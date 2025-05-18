@@ -3,7 +3,7 @@
 ## Description
 This is a data science project created as part of the second year curriculum.
 
-## Setup
+## Setup and usage
 1. Clone this repository
 2. Create a virtual environment (recommended):
    ```bash
@@ -14,14 +14,15 @@ This is a data science project created as part of the second year curriculum.
    ```bash
    pip install -r requirements.txt
    ```
-
-
-
-## Usage
-[Add usage instructions here]
-
-## Contributing
-[Add contribution guidelines if applicable]
-
-## License
-[Add license information if applicable] 
+4. Run, it will also generate infographics and save to data/insights: 
+   ```bash
+   python setup.py
+   ```
+5. Train the model:
+   ```bash
+   python models/price_reg.py
+   ```
+6. Use the model:
+   ```bash
+   python predict.py
+   ```
